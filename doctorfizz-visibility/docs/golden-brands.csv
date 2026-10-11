@@ -1,0 +1,11 @@
+brand,domain,category,locale,expected_result,manual_check_status
+Acenteus CCA,acenteus-cca.com,outsourced accounting,United Kingdom,observe without assuming visibility,not run
+Itzfizz,itzfizz.com,web development agencies,India,observe without assuming visibility,not run
+Xero,xero.com,accounting software,United Kingdom,observe without assuming visibility,not run
+Notion,notion.so,workspace software,Global,ambiguous name requires corroboration,not run
+Apple,apple.com,smartphone manufacturers,Global,ambiguous name requires corroboration,not run
+Linear,linear.app,issue tracking software,Global,ambiguous name requires corroboration,not run
+Miro,miro.com,online whiteboard software,Global,observe without assuming visibility,not run
+HubSpot,hubspot.com,CRM software,Global,observe without assuming visibility,not run
+Asana,asana.com,project management software,Global,observe without assuming visibility,not run
+Figma,figma.com,interface design software,Global,observe without assuming visibility,not run

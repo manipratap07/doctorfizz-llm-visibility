@@ -1,0 +1,14 @@
+CREATE TABLE IF NOT EXISTS visitors (id uuid PRIMARY KEY, created_at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE IF NOT EXISTS site_profiles (id uuid PRIMARY KEY, visitor_id uuid NOT NULL REFERENCES visitors(id), brand jsonb NOT NULL, profile jsonb NOT NULL, created_at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE IF NOT EXISTS generated_prompts (id uuid PRIMARY KEY, site_profile_id uuid NOT NULL REFERENCES site_profiles(id) ON DELETE CASCADE, type text NOT NULL, text text NOT NULL, created_at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE IF NOT EXISTS checks (id uuid PRIMARY KEY, visitor_id uuid NOT NULL REFERENCES visitors(id), site_profile_id uuid NOT NULL REFERENCES site_profiles(id), prompt_id uuid NOT NULL REFERENCES generated_prompts(id), prompt_text text NOT NULL, brand jsonb NOT NULL, selected_providers jsonb NOT NULL, status text NOT NULL DEFAULT 'queued', estimated_cost numeric NOT NULL DEFAULT 0, created_at timestamptz NOT NULL DEFAULT now(), deadline_at timestamptz NOT NULL, refunded boolean NOT NULL DEFAULT false, idempotency_key uuid NOT NULL, UNIQUE(visitor_id,idempotency_key));
+CREATE TABLE IF NOT EXISTS llm_runs (id uuid PRIMARY KEY, check_id uuid NOT NULL REFERENCES checks(id) ON DELETE CASCADE, provider_id text NOT NULL, repeat_index integer NOT NULL DEFAULT 0, status text NOT NULL DEFAULT 'queued', reason text, answer_text text, citations jsonb NOT NULL DEFAULT '[]', model_reported text, web_search_used boolean NOT NULL DEFAULT false, latency_ms integer, from_cache boolean NOT NULL DEFAULT false, cache_created_at timestamptz, analysis jsonb, created_at timestamptz NOT NULL DEFAULT now(), completed_at timestamptz);
+CREATE TABLE IF NOT EXISTS response_cache (key text PRIMARY KEY, result jsonb NOT NULL, created_at timestamptz NOT NULL DEFAULT now(), expires_at timestamptz NOT NULL);
+CREATE TABLE IF NOT EXISTS usage_events (id uuid PRIMARY KEY, visitor_id uuid NOT NULL REFERENCES visitors(id), check_id uuid UNIQUE REFERENCES checks(id) ON DELETE CASCADE, ip_hash text NOT NULL, domain text NOT NULL, cost numeric NOT NULL DEFAULT 0, refunded boolean NOT NULL DEFAULT false, created_at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE IF NOT EXISTS leads (id uuid PRIMARY KEY, visitor_id uuid NOT NULL REFERENCES visitors(id), name text NOT NULL, email text NOT NULL, phone text, consent_at timestamptz NOT NULL DEFAULT now());
+ALTER TABLE generated_prompts ADD COLUMN IF NOT EXISTS active boolean NOT NULL DEFAULT true;
+CREATE TABLE IF NOT EXISTS intelligence_cost_events(id uuid PRIMARY KEY,cost numeric NOT NULL,created_at timestamptz NOT NULL DEFAULT now());
+CREATE INDEX IF NOT EXISTS usage_visitor_idx ON usage_events(visitor_id,created_at);
+CREATE INDEX IF NOT EXISTS usage_ip_idx ON usage_events(ip_hash,created_at);
+CREATE INDEX IF NOT EXISTS usage_domain_idx ON usage_events(domain,created_at);
+CREATE INDEX IF NOT EXISTS runs_check_idx ON llm_runs(check_id);

@@ -1,0 +1,42 @@
+:root {
+  --df-bg: #0d0d0d;
+  --df-bg2: #111111;
+  --df-panel: #1a1918;
+  --df-panel2: #141312;
+  --df-raised: #201e1c;
+  --df-white: #ffffff;
+  --df-text: #f1f1f1;
+  --df-secondary: #a9a29b;
+  --df-muted: #6e6862;
+  --df-rust: #ca5223;
+  --df-rustLight: #d45427;
+  --df-orange: #fe9708;
+  --df-amber: #ffa615;
+  --df-gold: #ffd700;
+  --df-success: #35c48f;
+  --df-line: rgba(255, 255, 255, 0.08);
+  --df-lineMedium: rgba(255, 255, 255, 0.16);
+  --df-lineStrong: rgba(255, 255, 255, 0.28);
+  --df-grid: rgba(255, 255, 255, 0.022);
+  --df-radius-standard: 14px;
+  --df-radius-large: 22px;
+  --df-radius-pill: 999px;
+  --df-gradient: linear-gradient(
+    96deg,
+    var(--df-rust) 0%,
+    var(--df-orange) 46%,
+    var(--df-gold) 100%
+  );
+  --df-ease: cubic-bezier(0.22, 0.8, 0.28, 1);
+  --df-max-width: 1280px;
+  --df-space-1: 4px;
+  --df-space-2: 8px;
+  --df-space-3: 12px;
+  --df-space-4: 16px;
+  --df-space-5: 24px;
+  --df-space-6: 32px;
+  --df-space-7: 40px;
+  --df-space-8: 56px;
+  --df-space-9: 80px;
+  --df-space-10: 104px;
+}

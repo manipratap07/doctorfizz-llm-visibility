@@ -1,0 +1,83 @@
+services:
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: doctorfizz
+      POSTGRES_USER: doctorfizz
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U doctorfizz -d doctorfizz"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+  redis:
+    image: redis:8-alpine
+    command: [redis-server, --appendonly, "yes", --maxmemory-policy, noeviction]
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+  migrate:
+    build:
+      context: .
+      target: worker
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://doctorfizz:${POSTGRES_PASSWORD}@postgres:5432/doctorfizz
+    command: [npm, run, "db:migrate"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+  web:
+    build:
+      context: .
+      target: web
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://doctorfizz:${POSTGRES_PASSWORD}@postgres:5432/doctorfizz
+      REDIS_URL: redis://redis:6379
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          CMD,
+          node,
+          "-e",
+          "fetch('http://127.0.0.1:3000/api/health',{headers:{'x-doctorfizz-backend-key':process.env.BACKEND_SHARED_SECRET||''}}).then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+  worker:
+    build:
+      context: .
+      target: worker
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://doctorfizz:${POSTGRES_PASSWORD}@postgres:5432/doctorfizz
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    mem_limit: 2g
+    shm_size: 512mb
+volumes:
+  pgdata:
+  redisdata:

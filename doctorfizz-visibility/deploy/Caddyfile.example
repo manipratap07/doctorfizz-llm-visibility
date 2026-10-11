@@ -1,0 +1,7 @@
+visibility.example.com {
+    encode zstd gzip
+    reverse_proxy 127.0.0.1:3000 {
+        header_up X-DoctorFizz-IP {remote_host}
+        flush_interval -1
+    }
+}

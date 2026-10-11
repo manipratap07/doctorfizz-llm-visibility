@@ -1,0 +1,15 @@
+# Point backend.example.com's A record to the VPS. Ports 80/443 must reach Caddy.
+backend.example.com {
+    encode zstd gzip
+    @api path /api/*
+    handle @api {
+        reverse_proxy 127.0.0.1:3000 {
+            # x-doctorfizz-proxy-ip is set by the authenticated Vercel bridge.
+            # Next's proxy.ts rejects unauthenticated calls before route handling.
+            flush_interval -1
+        }
+    }
+    handle {
+        respond "DoctorFizz backend" 404
+    }
+}

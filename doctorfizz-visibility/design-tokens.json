@@ -1,0 +1,40 @@
+{
+  "color": {
+    "bg": "#0D0D0D",
+    "bg2": "#111111",
+    "panel": "#1A1918",
+    "panel2": "#141312",
+    "raised": "#201E1C",
+    "white": "#FFFFFF",
+    "text": "#F1F1F1",
+    "secondary": "#A9A29B",
+    "muted": "#6E6862",
+    "rust": "#CA5223",
+    "rustLight": "#D45427",
+    "orange": "#FE9708",
+    "amber": "#FFA615",
+    "gold": "#FFD700",
+    "success": "#35C48F",
+    "line": "rgba(255,255,255,.08)",
+    "lineMedium": "rgba(255,255,255,.16)",
+    "lineStrong": "rgba(255,255,255,.28)",
+    "grid": "rgba(255,255,255,.022)"
+  },
+  "radius": {
+    "standard": "14px",
+    "large": "22px",
+    "pill": "999px"
+  },
+  "space": [4, 8, 12, 16, 24, 32, 40, 56, 80, 104],
+  "font": {
+    "sans": "Manrope",
+    "mono": "Fira Code"
+  },
+  "maxWidth": "1280px",
+  "ease": "cubic-bezier(.22,.8,.28,1)",
+  "todo": [
+    "Exact error-red token unspecified; use amber with explicit Error label.",
+    "Logo PNGs not supplied. Text wordmark pending official assets.",
+    "Dark theme only; no light rules supplied."
+  ]
+}
